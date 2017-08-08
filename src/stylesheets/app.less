@@ -1,0 +1,54 @@
+h1 {
+  font-family: helvetica;
+  font-weight: 200;
+}
+
+html {
+  width: ~"calc(100% - 8px)";
+  height: ~"calc(100% - 8px)";
+  margin: 4px; /* Resize border */
+}
+
+body {
+  margin: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+
+.content_wrapper {
+  margin: 16px;
+}
+
+button, a, .no-window-drag {
+  -webkit-app-region: no-drag;
+}
+
+.bg-wrapper{
+  position: absolute;
+  width: ~"calc(100% - 8px)";  /* Account for resize border */
+  height: ~"calc(100% - 8px)"; /* Account for resize border */
+  overflow: hidden;
+  z-index: -1; /* Render text correctly */
+  clip-path: inset(0 0 0 0 round 5px); /* Rounded window corners */
+}
+
+.bg-image {
+  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url("../png/background.png");
+  background-position-x: 50%;
+  background-position-y: 50%;
+  background-size: cover;
+  filter: blur(4px);
+
+  /* Fix the background leaking in */
+  width: 110%;
+  height: 110%;
+  margin-left: -5%;
+  margin-top: -5%;
+}
+
+/* Account for resize border and round corners */
+#drawer {
+  clip-path: inset(4px 4px 4px 4px round 5px);
+  overflow: hidden;
+}
