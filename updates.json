@@ -1,8 +1,0 @@
-{
-    "win32-x64-prod": {
-        "readme": "First release",
-        "update": "https://github.com/CiriousJoker/LegacyManager/releases/download/v0.1.2/legacy-manager-setup-0.1.2.exe",
-        "install": "https://github.com/CiriousJoker/LegacyManager/releases/download/v0.1.2/legacy-manager-setup-0.1.2.exe",
-        "version": "0.1.5"
-    }
-}
