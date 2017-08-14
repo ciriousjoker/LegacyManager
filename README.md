@@ -31,8 +31,6 @@ If you just want a working version and do not want to tamper with any source cod
 ## Feature requests
 There are already many features planned, but if you have an interesting idea or just a feature you'd like to see implemented, just send me an [e-mail](mailto:ciriousjoker@gmail.com) or open up an issue.
 
-This thing is NOT READY FOR RELEASE and is under development. Check back to see when it's finished or make pull requests in order to speed things up :)
-
 ## How to use this repository
 See [this](USAGE.md) document for information on how this repository is structured and how to build.
 
