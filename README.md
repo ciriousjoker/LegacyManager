@@ -3,7 +3,7 @@ This is a mod manager for Super Smash Bros. Brawl Legacy XP.
 Its purpose os to be a one-click installer/launcher for everything SmashBrosLegacy related.
 
 ## Installation
-If you just want a working version and do not want to tamper with any source code, just download the official client from this link (link coming soon).
+If you just want a working version and do not want to tamper with any source code, just download the latest release from [here](https://github.com/CiriousJoker/LegacyManager/releases).
 
 ## Screenshots
 |              Legacy XP Installation              |                     Settings                     |
