@@ -11,10 +11,22 @@ If you just want a working version and do not want to tamper with any source cod
 | <img src="screenshots/LegacyXP.png"/>  | <img src="screenshots/Settings.png"/>  |
 
 ## Current features
-- Selectable installation folder for Legacy XP
-- Selectable SuperSmashBrosBrawl.iso location
-- Clicking [Install] automatically downloads the mod files and builds the game
-- Clicking [Remove] automatically removes the game (but not the Legacy Manager)
+- User can set: Brawl.iso location, installation folder and the password
+- Buttons:
+    - [Install/Update]: Automatically downloads the mod files and builds the game
+    - [Remove] automatically removes the game (but not the Legacy Manager)
+    - [Play] Launch the game
+- Automatically updates itself (updates will be applied on exit)
+- Automatically checks for Legacy XP updates during launch and prompts the user to update
+
+## Current limitations
+- Updating Legacy XP will completely overwrite the previous installation
+- Only works for the dev builds of Legacy XP (and therefore requires a password)
+
+## Future improvements
+- Split the game file to shrink update size and to not overwrite all previous settings
+- Better error handling
+- Linux/Mac support (this will take a while)
 
 ## Feature requests
 There are already many features planned, but if you have an interesting idea or just a feature you'd like to see implemented, just send me an [e-mail](mailto:ciriousjoker@gmail.com) or open up an issue.
