@@ -64,7 +64,7 @@ function launchManager() {
     MainWindow.show();
     MainWindow.focus();
 
-    MainWindow.openDevTools();
+    //MainWindow.openDevTools();
 
     // Open the DevTools automatically if developing
     if (env.name === 'development') {

@@ -204,7 +204,7 @@ class LegacyXP extends Component {
             {this.state.version_installed && (
               <Grid item xs>
                 <Typography type="subheading" gutterBottom style={{ color: "rgba(255, 255, 255, 0.6)" }}>
-                  this.state.version_installed.toString()
+                  {this.state.version_installed.toString()}
                 </Typography>
               </Grid>
             )}
