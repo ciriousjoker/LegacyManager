@@ -9,15 +9,44 @@ html {
   margin: 4px; /* Resize border */
 }
 
+/* Make body full height */
 body {
   margin: 0px;
   width: 100%;
   height: 100%;
 }
 
+/* Make body content full height */
+#root {
+  height: 100%;
+  display: flex;
+}
+
+/* Make react body full height */
+#root > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 
 .content_wrapper {
   margin: 16px;
+  margin-bottom: 50px;
+  display: flex;
+  flex: 1;
+}
+
+.page_root {
+  display: flex;
+  flex: 1;
+  padding-left: 32px;
+  padding-right: 32px;
+  flex-direction: column;
+}
+
+/* Fix scrollbars */
+.hide-scrollbars::-webkit-scrollbar {
+  display: none;
 }
 
 button, a, .no-window-drag {
@@ -47,8 +76,13 @@ button, a, .no-window-drag {
   margin-top: -5%;
 }
 
+/* Make autoupdate circular progress thinner */
+#autoupdate_circular_progress > svg > circle {
+  stroke-width: 2.5px;
+}
+
 /* Account for resize border and round corners */
-#drawer {
+.clipRoundedCorners {
   clip-path: inset(4px 4px 4px 4px round 5px);
   overflow: hidden;
 }

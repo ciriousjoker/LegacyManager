@@ -60,6 +60,7 @@ var FileExtractor = function (Id, Progress) {
         var check = Constants.Regex.ZipProcessing;
         //var logfile = path.join(lm.get.LogFolder(), "extract_" + new Date().getTime() + ".log");
 
+        var error = false;
 
         ExtractProcess.stdout.on('data', function (data) {
             // Convert from buffer to string
@@ -109,7 +110,8 @@ var FileExtractor = function (Id, Progress) {
             //fs.appendFile(logfile, data);
             console.log(data.toString());
             ExtractProcess.kill('SIGTERM');
-            cb(null, data.toString());
+            error = true;
+            cb(null, false);
         });
 
         ExtractProcess.on('close', function (code) {
@@ -118,7 +120,10 @@ var FileExtractor = function (Id, Progress) {
             // TODO: Implement log file
             //fs.appendFile(logfile, "wit ended with exit code: " + code);
 
-            cb(null, "Done with extracting the .iso");
+            if(!error) {
+                console.log("Done with extracting the .iso");
+                cb(null, true);
+            }
         });
     }
 }

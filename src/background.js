@@ -5,10 +5,14 @@
 
 import path from 'path';
 import url from 'url';
-import { app, Menu } from 'electron';
+import { app, Menu, ipcMain } from 'electron';
 import { devMenuTemplate } from './menu/dev_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import createWindow from './helpers/window';
+
+// Auto updating
+import { autoUpdater } from "electron-updater"
+
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -16,13 +20,7 @@ import env from './env';
 
 const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
-const setApplicationMenu = () => {
-  const menus = [editMenuTemplate];
-  if (env.name !== 'production') {
-    menus.push(devMenuTemplate);
-  }
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
-};
+var MainWindow;
 
 // Save userData in separate folders for each environment.
 // Thanks to this you can use production and development versions of the app
@@ -33,13 +31,19 @@ if (env.name !== 'production') {
 }
 
 app.on('ready', () => {
-  setApplicationMenu();
+  launchManager();
+});
 
-  const mainWindow = createWindow('main', {
+app.on('window-all-closed', () => {
+  app.quit();
+});
+
+function launchManager() {
+  MainWindow = createWindow('manager', {
     minHeight: 400,
     minWidth: 600,
-    width: 900,   // 'Hide' window while loading.
-    height: 600,  // Setting 'show' to false doesn't create a window shadow.
+    width: 900,
+    height: 600,
     frame: false,
     transparent: true,
     show: false
@@ -53,25 +57,52 @@ app.on('ready', () => {
   });
 
   console.log("Viewing: " + indexPath);
-  mainWindow.loadURL(indexPath);
+  MainWindow.loadURL(indexPath);
 
   // Don't show until we are ready and loaded
-  mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
-    mainWindow.focus();
+  MainWindow.once('ready-to-show', () => {
+    MainWindow.show();
+    MainWindow.focus();
 
-    //mainWindow.openDevTools();
-    
+    MainWindow.openDevTools();
+
     // Open the DevTools automatically if developing
     if (env.name === 'development') {
       installExtension([REACT_DEVELOPER_TOOLS])
         .then((name) => console.log(`Added Extension:  ${name}`))
         .catch((err) => console.log('An error occurred: ', err));
-      mainWindow.openDevTools();
+      MainWindow.openDevTools();
     }
   });
-});
+}
 
-app.on('window-all-closed', () => {
-  app.quit();
+
+
+
+// IPC
+// Auto updating
+ipcMain.on('check-update', (event, arg) => {
+  autoUpdater.checkForUpdates();
+  event.sender.send('update-checked', false);
+
+  autoUpdater.on('update-available', (info) => {
+    event.sender.send('update-checked', info);
+  })
+
+  autoUpdater.on('update-not-available', (info) => {
+    event.sender.send('update-checked', info);
+  });
+
+  autoUpdater.on('download-progress', (progress) => {
+    event.sender.send('update-progress', progress.percent);
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    console.log("Updating on exit.");
+    event.sender.send('update-downloaded', info);
+  });
+
+  autoUpdater.on('error', (err) => {
+    console.error(err);
+  });
 });

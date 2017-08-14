@@ -35,9 +35,11 @@ var DecryptionManager = function (id) {
         sync.fiber(function () {
             var { CSharpManager } = require('./CSharpManager.js');
             if (!sync.await(CSharpManager.DecryptFile(options, sync.defer()))) {
-                cb(null, "Error while decrypting: " + path.basename(options.InputFile));
+                console.log("Error while decrypting: " + path.basename(options.InputFile));
+                cb(null, false);
             } else {
-                cb(null, "Error while decrypting: " + path.basename(options.InputFile));
+                console.log("Decrypted file: " + path.basename(options.InputFile));
+                cb(null, true);
             }
         });
     }

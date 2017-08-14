@@ -92,8 +92,8 @@ function DownloadManager(Progress) {
     }
     */
     this.dl = function (remotefile, cb) {
-        _this.Progress.setMode(Current, Modes.Indeterminate);
-        
+        if (isdef(_this.Progress)) { _this.Progress.setMode(Current, Modes.Indeterminate) };
+
         var url = remotefile.Url;
 
         // Progress
@@ -173,13 +173,13 @@ function DownloadManager(Progress) {
                     return;
                 }
 
-                _this.Progress.setMode(Current, Modes.Determinate);
+                if (isdef(_this.Progress)) { _this.Progress.setMode(Current, Modes.Determinate) };
             } else {
                 console.log("Download failed: " + response.statusCode);
                 req.abort();
                 // TODO: Implement Progress.reset() here
-                _this.Progress.setProgress(Current, 0);
-                _this.Progress.setProgress(Total, 0);
+                if (isdef(_this.Progress)) { _this.Progress.setProgress(Current, 0) };
+                if (isdef(_this.Progress)) { _this.Progress.setProgress(Total, 0) };
             }
         });
 
@@ -195,17 +195,18 @@ function DownloadManager(Progress) {
                     progress = (progress >= 100) ? 100 : progress;
 
 
-                    _this.Progress.setStatusSuffix(": " + megabytes + " mb");
-                    _this.Progress.setProgress(Current, progress);
+                    if (isdef(_this.Progress)) { _this.Progress.setStatusSuffix(": " + megabytes + " mb") };
+                    if (isdef(_this.Progress)) { _this.Progress.setProgress(Current, progress) };
 
                     Progress.Last = Progress.Current;
                 }
             } else {
                 // Set indeterminate
-                _this.Progress.setMode(Current, Modes.Indeterminate);
+                if (isdef(_this.Progress)) { _this.Progress.setMode(Current, Modes.Indeterminate) };
             }
 
-            if (_this.Progress.isCancelled()) {
+            if (isdef(_this.Progress) && _this.Progress.isCancelled()) {
+                remotefile.downloaded = false;
                 req.abort();
                 console.log("Download aborted.");
                 // TODO: Implement Progress.reset() here
@@ -216,9 +217,11 @@ function DownloadManager(Progress) {
 
         req.on('end', function () {
             stream.on('finish', function () {
-                remotefile.downloaded = true;
-
-                _this.Progress.setStatusSuffix("");
+                // Only set downloaded to "true" when it wasn't cancelled
+                if (remotefile.downloaded !== false) {
+                    remotefile.downloaded = true;
+                }
+                if (isdef(_this.Progress)) { _this.Progress.setStatusSuffix("") };
 
                 // Return either the json object or the filepath
                 if (remotefile.ReadToMemory) {
@@ -248,7 +251,46 @@ function DownloadManager(Progress) {
         req.on('error', function (err) {
             console.log("ERROR: ");
             console.log(err);
-            _this.Progress.cancel();
+            if (isdef(_this.Progress)) { _this.Progress.cancel() };
+        });
+    }
+
+    // Downloads a website and returns the html as a string
+    this.dl_text = function (url, cb) {
+        var complete_page = "";
+
+        // Default request options
+        // If the download was blocked, this will be modified later
+        var request_options = {
+            method: 'GET',
+            uri: url,
+            gzip: true,
+        }
+
+        var req = request(request_options);
+
+        req.on('response', function (response) {
+            // If the site was reachable
+            if (response && response.statusCode == 200) {
+                console.log("Webserver answered. Waiting for page to be downloaded.");
+            } else {
+                console.log("Download failed: " + response.statusCode);
+                req.abort();
+            }
+        });
+
+        req.on('data', function (data) {
+            //console.log(data.toString());
+            complete_page += data.toString();
+        });
+
+        req.on('end', function () {
+            cb(null, complete_page);
+        });
+
+        req.on('error', function (err) {
+            console.log("ERROR: ");
+            console.log(err);
         });
     }
 

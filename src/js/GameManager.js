@@ -92,13 +92,13 @@ var GameManager = function (Progress) {
             var game = GameInfo.get(Id);
 
             var Database = sync.await(dm.UpdateDatabase(sync.defer()));
-            var CurrentVersion = gm.isInstalled(game, sync.defer());
+            var CurrentVersion = gm.isInstalled(Id, sync.defer());
 
 
             var VersionData = Database.game_info[Id];
             var LastVersionNumver = VersionData.Releases.length - 1;
 
-            if (CurrentVersion < LastVersionNumver) {
+            if (!CurrentVersion || CurrentVersion.Version < LastVersionNumver) {
                 //console.log("New version available: ", VersionData.Releases[LastVersionNumver].VersionString);
                 cb(null, VersionData.Releases[LastVersionNumver]);
                 return;
@@ -137,7 +137,11 @@ var GameManager = function (Progress) {
             var FileDecrypted = LocationConstants.Filenames.FileDecrypted;
 
             // Other information
-            var Password = fs.readFileSync(LocationConstants.Filenames.DefaultPassword).toString();
+
+            // TODO: Do not hardcode passwords for legacy xp. Remove this once other mods are added.
+            //var Password = fs.readFileSync(LocationConstants.Filenames.DefaultPassword).toString();
+            var Password = settings.get(Constants.Settings.PasswordLegacyXP);
+
 
             // TODO: Add support for patches once out
 
@@ -151,9 +155,14 @@ var GameManager = function (Progress) {
                 DownloadFolder: InstallationFolder,
                 Status: "Downloading the game"
             }
-            console.log("Downloading (skipped for now)", remotefile);
+            console.log("Downloading", remotefile);
             var GameFile = sync.await(dm.download(remotefile, sync.defer()));
-            console.log("Downloaded:" + GameFile);
+            console.log("Download result: ", GameFile);
+            if(!GameFile.downloaded) {
+                _this.Progress.fail();
+                cb(null, false);
+                return;
+            }
             // #endregion Download the game
 
 
@@ -168,8 +177,14 @@ var GameManager = function (Progress) {
                 Progress: _this.Progress,
                 Id
             };
+            // TODO: Improve error handling
             var ResultDecryption = sync.await(decrypt.DecryptFile(options, sync.defer()));
             console.log("Decrypted", ResultDecryption);
+            if(!ResultDecryption) {
+                _this.Progress.fail();
+                cb(null, false);
+                return;
+            }
             // #endregion Decrypting the package
 
             // #region Extract the package
@@ -182,6 +197,11 @@ var GameManager = function (Progress) {
             };
             var ResultExtraction = sync.await(extractor.ExtractFile(options, sync.defer()));
             console.log("ResultExtraction: ", ResultExtraction);
+            if(!ResultExtraction) {
+                _this.Progress.fail();
+                cb(null, false);
+                return;
+            }
             // #endregion Extract the package
 
 
@@ -189,6 +209,11 @@ var GameManager = function (Progress) {
             _this.Progress.setStatus("Building the game");
             var BuildWorked = sync.await(BuildRoutine[Id](Id, _this.Progress, sync.defer()));
             console.log("Build worked: " + BuildWorked);
+            if(!BuildWorked) {
+                _this.Progress.fail();
+                cb(null, false);
+                return;
+            }
 
 
             Game.Id = Id;
@@ -225,23 +250,20 @@ var GameManager = function (Progress) {
         });
     }
 
-    // Returns -1 or the version of the game given by options.Id
-    this.isInstalled = function (_game, cb) {
+    // Returns false or the version of the game given by options.Id
+    this.isInstalled = function (Id, cb) {
         console.log("Checking if the game is installed.");
-        var Id = _game.Id;
-
         var game = GameInfo.get(Id);
-
         if (!isdef(game)) {
-            return -1;      // TODO: Change to constant "NotInstalled"
-            cb(null, -1);
+            cb(null, false);
+            return false;      // TODO: Change to constant "NotInstalled"
         }
 
         var InstallationFolder = game.InstallationFolder;
 
         if (!isdef(InstallationFolder)) {
-            cb(null, -1);
-            return -1;
+            cb(null, false);
+            return false;
         }
 
         var InfoFile = path.join(InstallationFolder, GameInfoFile);
@@ -254,11 +276,11 @@ var GameManager = function (Progress) {
                 // TODO: Check for duplicate installation folders during installation (when more than one version is out)
                 // TODO: Show a message box: "There seems to be another version of the game installed in the same folder. Do not do this."
             }
-            cb(null, info);
+            cb(null, game);
             return info;
         } else {
-            cb(null, -1);
-            return -1;
+            cb(null, false);
+            return false;
         }
     }
 }

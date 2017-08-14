@@ -47,6 +47,7 @@ var LocationConstants = {
         DolFolder: path.join("Legacy XP", "WBFS", "Builder", "Resources", "patch"),
         DolCodehandler: "codehandler.bin",
         DolPatchCommon: "PatchCommon.xml",
+        DolphinFolder: "Dolphin LXP",
         FinalGameFolder: path.join("Legacy XP", "WBFS"),
         BlackList: path.join("Legacy XP", "WBFS", "Builder", "Resources", "black.list"),
         Tools: {
@@ -97,6 +98,11 @@ var LocationManager = function () {
         GameFolder: function (Id, cb) {
             // TODO: Add error handling
             return returnValue(GameInfo.get(Id).InstallationFolder, cb);
+        },
+        DolphinExecutable: function (Id, cb) {
+            // TODO: Linux/Mac support
+            // TODO: Make constant
+            return returnValue(path.join(GameInfo.get(Id).InstallationFolder, LocationConstants.Folders.DolphinFolder, "Dolphin LXP- [Performance].exe"), cb);
         },
         // TODO: Remove this and replace it with GameFolder or TempFolder
         DownloadFolder: function (Id, cb) {

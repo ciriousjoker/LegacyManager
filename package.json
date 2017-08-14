@@ -2,7 +2,7 @@
   "name": "legacy-manager",
   "productName": "Legacy Manager",
   "description": "The game launcher and updater for Super Smash Bros. Legacy",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": "CiriousJoker <ciriousjoker@gmail.com>",
   "copyright": "© 2017 CiriousJoker",
   "homepage": "http://www.smashbroslegacy.com/",
@@ -17,10 +17,12 @@
     ],
     "extraFiles": [
       "src/cs/**/*",
-      ".passwd",
       ".server"
     ],
-    "publish": null
+    "publish": {
+      "provider": "github",
+      "owner": "CiriousJoker"
+    }
   },
   "scripts": {
     "dev": "webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js",
@@ -39,9 +41,11 @@
     "7zip-bin": "^2.1.0",
     "child_process": "^1.0.2",
     "edge-asar-cs": "^1.0.3",
+    "edge-cs": "^1.2.1",
     "electron-devtools-installer": "^2.2.0",
     "electron-edge": "^6.5.5",
     "electron-settings": "^3.1.1",
+    "electron-updater": "^2.8.6",
     "file-exists": "^4.0.0",
     "fs-extra": "^3.0.1",
     "fs-jetpack": "^1.0.0",
@@ -54,6 +58,7 @@
     "path": "^0.12.7",
     "react": "^15.6.1",
     "react-dom": "^15.4.2",
+    "react-fade-in": "^0.1.4",
     "react-router": "^4.1.2",
     "react-router-dom": "^4.1.2",
     "request": "^2.81.0",

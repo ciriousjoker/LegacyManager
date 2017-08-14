@@ -131,7 +131,7 @@ class StatusItem extends Component {
 
             <CardContent className={classes.NoVerticalPadding}>
               <Typography type="body2" style={{ marginBottom: "8px" }}>
-                {this.props.ProgressHolder.Status + (this.props.ProgressHolder.StatusSuffix || "")}
+                {this.props.ProgressHolder.Status + (this.props.ProgressHolder.StatusSuffix || "") + " "}
               </Typography>
               <LinearProgress mode={this.props.ProgressHolder[Constants.Progress.Current].Mode} value={this.props.ProgressHolder[Constants.Progress.Current].Value} style={{ width: '100%' }} />
               {

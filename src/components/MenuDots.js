@@ -54,6 +54,7 @@ class MenuDots extends Component {
         </IconButton>
         <Menu
           id="menu-dots"
+          className="no-window-drag"
           anchorEl={this.state.anchorEl}
           open={this.state.open}
           onRequestClose={this.handleRequestClose}

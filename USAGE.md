@@ -42,9 +42,9 @@ This command uses electron-builder to create an NSIS installer in the ```/dist``
 
 ### Important notes
 - Relative pathes aren't consistent. This (afaik) can't be fixed. If you change anything, just look at the imports to figure out where ```./``` points to
-- The ```.passwd``` & ```.server``` files are neccessary and the information in them is stored in plain text
+- The ```.passwd```(plain text password) & ```.server``` (plain text url to a .json file) files are neccessary
 - The pathing for the .csx files might seem weird at first, but is fixed during build
-- Run ```npm install edge-asar-cs``` and replace ```/node_modules/edge-cs``` with it to fix an asar issue while building
+- Run ```npm install edge-asar-cs``` and copy it's lib folder into ```/node_modules/edge-cs``` to fix an asar issue while building
 - Clearing the ```/app``` folder might be helpful if you experience errors during build. Check the [.gitignore](.gitignore) for information on which files and folders have to be created before this thing can run
 
 This repository uses a boilerplate. You can check it out [here](https://github.com/szwacz/electron-boilerplate). Big thanks to him, he made a lot of things easier!

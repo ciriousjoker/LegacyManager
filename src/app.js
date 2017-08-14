@@ -138,8 +138,13 @@ class App extends Component {
       }), cb);
     }.bind(this),
 
+    // TODO: Remove this
     cancel: function (cb) {
-      this.setVisibility(false, cb);
+      this.Progress.setVisibility(false, cb);
+    }.bind(this),
+    
+    fail: function (cb) {
+      this.Progress.setStatus("Failed to update to latest version. You might want to consider reinstalling it.", cb);
     }.bind(this),
 
     isCancelled: function (cb) {

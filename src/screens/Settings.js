@@ -5,6 +5,7 @@ import Input from 'material-ui/Input/Input';
 import Paper from 'material-ui/Paper';
 import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
+import Divider from 'material-ui/Divider';
 
 const { dialog } = require('electron').remote;
 const settings = require('electron-settings');
@@ -21,7 +22,8 @@ class LegacyXP extends Component {
     super(props);
 
     this.state = {
-      IsoLocation: settings.get(Constants.Settings.BrawlIsoLocation, "")
+      IsoLocation: settings.get(Constants.Settings.BrawlIsoLocation, ""),
+      Password: settings.get(Constants.Settings.PasswordLegacyXP, "")
     };
   }
 
@@ -35,16 +37,25 @@ class LegacyXP extends Component {
     settings.set(Constants.Settings.BrawlIsoLocation, result);
   }
 
+  _handlePasswordChanged = (e) => {
+    var password = e.target.value;
+    this.setState({
+      Password: password
+    });
+    console.log("New password:", password);
+    settings.set(Constants.Settings.PasswordLegacyXP, password);
+  }
+
   render() {
     return (
-      <div>
+      <div className="page_root">
         <Typography type="display1" gutterBottom>
           Settings
         </Typography>
 
-        <Typography type="subheading" >
+        <Typography type="subheading">
           Choose your brawl .iso
-        </Typography>
+          </Typography>
         <Grid container gutter={24}>
           <Grid item xs>
             <TextField value={this.state.IsoLocation.toString()} placeholder="Path/to/an/empty/folder" fullWidth />
@@ -53,6 +64,18 @@ class LegacyXP extends Component {
             <Button onClick={this.selectBrawlIso.bind(this)}>
               Select .iso
             </Button>
+          </Grid>
+        </Grid>
+
+        {/* TODO: Don't hardcode this height */}
+        <div style={{ height: "32px" }} />
+
+        <Typography type="subheading">
+          Enter the password
+          </Typography>
+        <Grid container gutter={24}>
+          <Grid item xs>
+            <TextField value={this.state.Password.toString()} onChange={this._handlePasswordChanged} placeholder="Ask the Legacy XP dev team for the password." fullWidth />
           </Grid>
         </Grid>
       </div>

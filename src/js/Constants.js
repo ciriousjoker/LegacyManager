@@ -86,7 +86,8 @@ Constants.UI = {
 Constants.Settings = {
     BrawlIsoLocation: "iso_location",
     StatusTrayExpanded: "statustray_expanded",
-    GameInfoPrefix: "game_"
+    GameInfoPrefix: "game_",
+    PasswordLegacyXP: "password_lxp"
 };
 Constants.Progress = {
     Prefix: "progress_",

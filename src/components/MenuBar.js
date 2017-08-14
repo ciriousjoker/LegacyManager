@@ -14,6 +14,13 @@ import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
 import Menu, { MenuItem } from 'material-ui/Menu';
+import { CircularProgress } from 'material-ui/Progress';
+import * as Colors from 'material-ui/colors';
+
+// Auto updating
+import { autoUpdater } from "electron-updater";
+import { ipcRenderer, remote } from "electron";
+
 
 import MenuDots from './MenuDots';
 
@@ -55,15 +62,72 @@ const styleSheet = createStyleSheet({
   listFull: {
     width: 'auto',
     flex: 'initial'
+  },
+  progress: {
+    color: Colors.grey[50]
   }
 });
+
 
 class MenuBar extends Component {
   constructor() {
     super();
     this.state = {
-      open: false
+      open: false,
+      autoupdate_progress: 0,
+      autoupdate_mode: "indeterminate",
+      autoupdate_progress_visible: false,
+      autoupdate_message_visible: false
     }
+  }
+
+  componentDidMount() {
+    this.checkUpdates();
+  }
+
+  checkUpdates() {
+    console.log("Checking for updates");
+
+    ipcRenderer.send('check-update');
+
+    // Start the indeterminate circular progress
+    this.setState({
+      autoupdate_progress_visible: true
+    });
+
+    ipcRenderer.on('update-checked', (event, info) => {
+      console.log("Update available:");
+      console.log(info);
+
+      // Make progress determinate
+      this.setState({
+        autoupdate_mode: "determinate",
+        autoupdate_progress_visible: false
+      });
+    });
+
+
+    ipcRenderer.on('update-progress', (event, progress) => {
+      console.log("Downloading:");
+      console.log(progress);
+
+      // Start to show the actual progress
+      this.setState({
+        autoupdate_progress: Math.round(progress),
+        autoupdate_progress_visible: true
+      });
+    });
+
+    ipcRenderer.on('update-downloaded', (event, info) => {
+      console.log("Updating on exit.");
+      console.log(info);
+
+      // Replace the progress with the "finished" message
+      this.setState({
+        autoupdate_message_visible: true,
+        autoupdate_progress_visible: false
+      });
+    });
   }
 
   //Toggle function (open/close Drawer)
@@ -71,11 +135,11 @@ class MenuBar extends Component {
     if (_state === true || _state === false) {
       this.setState({
         open: _state
-      })
+      });
     } else {
       this.setState({
         open: !this.state.open
-      })
+      });
     }
   }
 
@@ -130,7 +194,7 @@ class MenuBar extends Component {
 
 
     return (
-      <div>
+      <div ref="is_loaded">
         <AppBar position="static" className={classes.appbar} style={{ WebkitAppRegion: "drag" }} elevation={0}>
           <Toolbar style={{ paddingLeft: "8px", paddingRight: "8px" }}>
             <IconButton color="contrast" aria-label="Menu" onClick={this.toggleDrawer.bind(this)}>
@@ -140,11 +204,33 @@ class MenuBar extends Component {
               Legacy Manager
           </Typography>
             {/* <Button color="contrast">Sample Button</Button> */}
+
+            {/* Show the update message only if the update was downloaded. */}
+            {this.state.autoupdate_message_visible && (
+              <Typography noWrap>
+                {`
+                The Legacy Manager will be updated on exit.
+                `}
+              </Typography>
+            )}
+
+            {/* Show the progress only while it's active. */}
+            {this.state.autoupdate_progress_visible && (
+              <CircularProgress
+                id="autoupdate_circular_progress"
+                className={classes.progress}
+                size={18}
+                mode={this.state.autoupdate_mode}
+                value={this.state.autoupdate_progress}
+              />
+            )}
+
+
             <MenuDots></MenuDots>
           </Toolbar>
         </AppBar>
         <Drawer
-          id="drawer"
+          className="clipRoundedCorners"
           open={this.state.open}
           onRequestClose={this.handleLeftClose}
           onClick={this.handleLeftClose}
