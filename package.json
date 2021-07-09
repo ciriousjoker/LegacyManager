@@ -73,7 +73,7 @@
     "babel-preset-stage-1": "^6.24.1",
     "babili-webpack-plugin": "^0.0.11",
     "chai": "^4.1.0",
-    "electron": "1.6.11",
+    "electron": ">=9.4.0"
     "electron-builder": "^19.16.0",
     "electron-mocha": "^4.0.0",
     "electron-packager": "^8.7.0",
@@ -97,6 +97,6 @@
     "source-map-support": "^0.4.15",
     "spectron": "^3.7.2",
     "webpack": "^2.5.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": ">=3.1.11"
   }
 }
