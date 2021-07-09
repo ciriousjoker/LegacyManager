@@ -1,3 +1,7 @@
+This project eventually died because of low demand. Sadly, the game also no longer exists as announced by [@SmashBrosLegacy](https://twitter.com/smashbroslegacy) on Twitter.
+
+---
+
 # Legacy Manager
 This is a mod manager for Super Smash Bros. Brawl Legacy XP.
 Its purpose os to be a one-click installer/launcher for everything SmashBrosLegacy related.
